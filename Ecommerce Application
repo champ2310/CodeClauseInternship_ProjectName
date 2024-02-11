@@ -1,1 +1,158 @@
+package Shoppingcart;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Product {
+    private String name;
+    private double price;
+
+    public Product(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+}
+
+class ShoppingCart {
+    private List<Product> items;
+
+    public ShoppingCart() {
+        items = new ArrayList<>();
+    }
+
+    public void addItem(Product product) {
+        items.add(product);
+    }
+
+    public List<Product> getItems() {
+        return items;
+    }
+
+    public double calculateTotal() {
+        double total = 0.0;
+        for (Product item : items) {
+            total += item.getPrice();
+        }
+        return total;
+    }
+}
+
+public class EcommerceApp {
+    private static List<Product> products = new ArrayList<>();
+    private static ShoppingCart cart = new ShoppingCart();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        initializeProducts();
+
+        while (true) {
+            displayMenu();
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+
+            switch (choice) {
+                case 1:
+                    browseProducts();
+                    break;
+                case 2:
+                    viewCart();
+                    break;
+                case 3:
+                    completePurchase();
+                    break;
+                case 4:
+                    System.out.println("Thank you for shopping with us!");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    // Applications All products are here to buy
+    private static void initializeProducts() {
+        products.add(new Product("Mobile", 10000.0));
+        products.add(new Product("Tablet", 2000.0));
+        products.add(new Product("Ipad", 3000.0));
+        products.add(new Product("Camera", 4000.0));
+        products.add(new Product("Shirt", 70.0));
+        products.add(new Product("Trouser", 80.0));
+        products.add(new Product("Tshirt", 50.0));
+        products.add(new Product("Kurti", 60.0));
+        products.add(new Product("Grocery", 200.0));
+
+
+    }
+
+    private static void displayMenu() {
+        
+        System.out.println("Welcome To Champ's Store");
+        System.out.println("=============================");
+        System.out.println("\nMenu:");
+        System.out.println("1. Browse Products");
+        System.out.println("2. View Your Cart");
+        System.out.println("3. Complete Your Purchase");
+        System.out.println("4. Exit");
+        System.out.print("Select What You Want : ");
+    }
+
+    private static void browseProducts() {
+        System.out.println("\nAvailable Products:");
+        for (int i = 0; i < products.size(); i++) {
+            System.out.println((i + 1) + ". " + products.get(i).getName() + " - $" + products.get(i).getPrice());
+        }
+
+        System.out.print("Enter the product number to add to cart (0 to cancel): ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Buyers newline character
+
+        if (choice >= 1 && choice <= products.size()) {
+            cart.addItem(products.get(choice - 1));
+            System.out.println("Product added to cart.");
+        } else if (choice != 0) {
+            System.out.println("Invalid product number.");
+        }
+    }
+
+    private static void viewCart() {
+        List<Product> items = cart.getItems();
+
+        if (items.isEmpty()) {
+            System.out.println("Your cart is empty.");
+        } else {
+            System.out.println("\nYour Cart:");
+            for (int i = 0; i < items.size(); i++) {
+                System.out.println((i + 1) + ". " + items.get(i).getName() + " - $" + items.get(i).getPrice());
+            }
+            System.out.println("Total: $" + cart.calculateTotal());
+        }
+    }
+
+    private static void completePurchase() {
+        double total = cart.calculateTotal();
+        if (total == 0) {
+            System.out.println("Your cart is empty. Cannot complete purchase.");
+        } else {
+            System.out.println("Total: $" + total);
+            System.out.print("Enter your payment amount: $");
+            double payment = scanner.nextDouble();
+            scanner.nextLine(); // Buyers newline character
+
+            if (payment < total) {
+                System.out.println("Insufficient payment. Please try again.");
+            } else {
+                System.out.println("Payment successful. Thank you! For Shopping");
+                cart = new ShoppingCart(); // Clear cart after purchase
+            }
+        }
+    }
+}
